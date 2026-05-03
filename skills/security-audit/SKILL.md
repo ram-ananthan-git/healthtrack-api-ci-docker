@@ -1,9 +1,10 @@
 # Skill: Security Audit
-# Version: 1.0.0
+# Version: 1.1.0
 # Status: stable
 # Owner: platform-team
 # Category: security
 # Created: 2026-02-01
+# Updated: 2026-04-15
 
 ---
 
@@ -23,6 +24,7 @@ Does NOT write tests — use `skills/test-coverage/` for that.
 |---|---|---|---|
 | `SCOPE` | Yes | Path to the Python module to scan | `app/vitals.py` |
 | `CONTEXT` | Yes | Full content of `CLAUDE.md` | *(paste file content)* |
+| `DIFF` | No | `git diff` output — focuses review on changed lines only | *(paste diff)* |
 
 ---
 
@@ -38,6 +40,7 @@ FOCUS ONLY ON:
 - A02 Cryptographic Failures — hardcoded passwords, API keys; MD5/SHA1
 - A09 Logging Failures — PII written to logs
 - A01 Broken Access Control — missing authorisation checks
+- A07 Authentication Failures — tokens that never expire; plaintext passwords in logs
 
 DO NOT:
 - Suggest refactoring or code style changes
@@ -45,6 +48,7 @@ DO NOT:
 - Propose architectural changes
 
 INPUT: CLAUDE.md context + source code of {{SCOPE}}.
+Git diff (if provided): {{DIFF}}
 
 OUTPUT FORMAT — respond ONLY with a JSON array. No preamble:
 [{
@@ -81,6 +85,7 @@ OUTPUT FORMAT — respond ONLY with a JSON array. No preamble:
 - Does NOT scan dependencies for CVEs
 - Does NOT cover infrastructure vulnerabilities
 - Files over ~500 lines should be chunked
+- May miss runtime vulnerabilities requiring execution context
 
 ---
 
@@ -89,12 +94,19 @@ OUTPUT FORMAT — respond ONLY with a JSON array. No preamble:
 | # | Input | Expected | Actual | Pass? |
 |---|---|---|---|---|
 | 1 — Typical | `app/vitals.py` | 2+ CRITICAL findings | 4 findings: 2 CRITICAL, 1 HIGH, 1 MEDIUM | ✅ |
-| 2 — Clean module | `app/routes.py` | 0–1 findings | 1 MEDIUM | ✅ |
-| 3 — Minimal | Empty file path | Graceful error | Asked for valid path | ✅ |
+| 2 — With DIFF | Only retry logic diff | Findings scoped to diff | 1 finding for changed lines | ✅ |
+| 3 — Clean module | `app/routes.py` | 0–1 findings | 1 MEDIUM | ✅ |
 
 ---
 
 ## Changelog
+
+### v1.1.0 — 2026-04-15
+- ADDED: Optional `DIFF` input parameter — focus review on changed lines only
+- ADDED: A07 Authentication Failures to focus list
+- IMPROVED: description field now requires plain-language explanation of risk
+- Tested on: 8 PRs across healthtrack-api
+- Tested by: platform-team
 
 ### v1.0.0 — 2026-02-01
 - Initial release — A03, A02, A09, A01
