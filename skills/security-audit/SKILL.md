@@ -1,10 +1,10 @@
 # Skill: Security Audit
-# Version: 1.1.0
+# Version: 1.2.0
 # Status: stable
 # Owner: platform-team
 # Category: security
 # Created: 2026-02-01
-# Updated: 2026-04-15
+# Updated: 2026-05-03
 
 ---
 
@@ -100,6 +100,12 @@ OUTPUT FORMAT — respond ONLY with a JSON array. No preamble:
 ---
 
 ## Changelog
+
+### v1.2.0 — 2026-05-03
+- MAJOR: Output schema changed — added required field "remediation_effort" (low/medium/high)
+- All callers must update to handle the new field
+- Tested on: 6 runs
+- Tested by: platform-team
 
 ### v1.1.0 — 2026-04-15
 - ADDED: Optional `DIFF` input parameter — focus review on changed lines only
