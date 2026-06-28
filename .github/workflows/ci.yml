@@ -21,10 +21,16 @@ jobs:
           python-version: "3.11"
 
       - name: Install lint dependencies
-        run: pip install flake8
+        run: pip install ruff
 
-      - name: Run flake8
-        run: flake8 app/ tests/ --max-line-length=100
+      - name: Debug info
+        run: |
+          python --version
+          pip list
+          python -m ruff --version
+
+      - name: Run ruff
+        run: python -m ruff check . --output-format=github
 
   test:
     name: Test
