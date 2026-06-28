@@ -7,9 +7,15 @@ from .vitals import record_vitals, get_patient_vitals, get_vital_trend
 from .alerts import get_active_alerts, acknowledge_alert, escalate_alert
 from .auth import validate_token
 
+health_bp   = Blueprint("health",   __name__)
 vitals_bp   = Blueprint("vitals",   __name__, url_prefix="/vitals")
 patients_bp = Blueprint("patients", __name__, url_prefix="/patients")
 alerts_bp   = Blueprint("alerts",   __name__, url_prefix="/alerts")
+
+
+@health_bp.route("/health")
+def health():
+    return jsonify({"status": "ok"}), 200
 
 
 def _get_staff_id(req) -> str | None:
