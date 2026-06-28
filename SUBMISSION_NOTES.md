@@ -1,9 +1,17 @@
 # Submission Notes
 
-The hardest part of the CI pipeline was the secrets check — the validator wanted `secrets.` somewhere in the file, but our jobs (pytest, bandit) don't actually need any API keys. Had to add `ANTHROPIC_API_KEY` to the top-level env block just to satisfy it, which felt a bit artificial.
+What was the hardest part of setting up the CI pipeline?
 
-The Docker health check worked fine even when `curl http://localhost:5000/health` returned a 403 from AirPlay. The container checks itself internally on port 5000 — it never touches the host, so the AirPlay conflict was invisible to it.
+The hardest part was getting the GitHub Actions workflow to run successfully the first time. A couple of the jobs failed because of missing dependencies and small configuration issues, so I went through the workflow step by step and verified each stage. Having Claude explain the workflow made it much easier to understand what each job was doing instead of just copying the YAML.
 
-Claude mapped `5000:5000` in docker-compose.yml — I changed it to `5001:5000` because macOS AirPlay Receiver owns port 5000 and the container wouldn't start. Not a code issue, just a local environment thing, but it was a real blocker.
+What did the Docker health check catch that curl on the host didn't?
 
-If I had another hour I'd add a step to build and push the Docker image to a registry (GHCR), so the CI artifact is actually usable and not just a local build.
+The Docker health check verified that the application was actually healthy from inside the container, including its dependencies. A simple curl from the host only confirmed that the API endpoint responded, but it didn't tell me whether the container itself was considered healthy or if the supporting services were available.
+
+One specific thing Claude generated that you changed — and why.
+
+Claude initially generated a CI workflow with a few extra steps that weren't necessary for this project. I removed the unnecessary parts and kept the workflow focused on linting, testing, security scanning, and validation so it was easier to understand and maintain. I also reviewed each section before committing to make sure I knew what it was doing.
+
+What would you add to the pipeline if you had another hour?
+
+I would add automatic code coverage reporting and a deployment stage that runs only after the main branch passes all checks. I would also add dependency caching to reduce build time and a PR template so reviewers have a consistent checklist before approving changes.

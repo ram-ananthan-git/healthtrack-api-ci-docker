@@ -1,0 +1,2 @@
+exclude = ["plugins/", "scripts/", "tests/"]
+line-length = 100
