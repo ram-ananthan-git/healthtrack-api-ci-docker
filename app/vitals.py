@@ -170,3 +170,4 @@ def _execute_read(query: str, params: tuple = ()) -> list:
 # PR validation comment
 # PR validation comment
 # trigger clean CI run
+# PR validation comment
